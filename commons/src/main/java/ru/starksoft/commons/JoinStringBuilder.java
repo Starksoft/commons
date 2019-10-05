@@ -18,12 +18,12 @@ public final class JoinStringBuilder {
 
 	@NonNull
 	public JoinStringBuilder addWithComma(@Nullable String element) {
-		elementsList.add(Element.newInstance(element, ", "));
+		elementsList.add(new Element(element, ", "));
 		return this;
 	}
 
 	public JoinStringBuilder add(@Nullable String element, @NonNull String delimiter) {
-		elementsList.add(Element.newInstance(element, delimiter));
+		elementsList.add(new Element(element, delimiter));
 		return this;
 	}
 
@@ -76,10 +76,6 @@ public final class JoinStringBuilder {
 		private Element(@Nullable String text, @NonNull String delimiter) {
 			this.text = text;
 			this.delimiter = delimiter;
-		}
-
-		static Element newInstance(@Nullable String text, @NonNull String delimiter) {
-			return new Element(text, delimiter);
 		}
 
 		@NonNull

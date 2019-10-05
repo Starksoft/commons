@@ -84,7 +84,7 @@ public class CacheDiffUtilTest {
 		assertEquals(0, diffResult.getToRemove().size());
 		assertEquals(0, diffResult.getToUpdate().size());
 
-		assertTrue((endTime - startTime) < 2200);
+		assertTrue((endTime - startTime) < 3000);
 	}
 
 	@NonNull

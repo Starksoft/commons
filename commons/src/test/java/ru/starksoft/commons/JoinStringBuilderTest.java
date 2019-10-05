@@ -6,114 +6,133 @@ import static junit.framework.Assert.assertEquals;
 
 public class JoinStringBuilderTest {
 
-    private final JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+	@Test
+	public void allAraValid() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
 
-    @Test
-    public void allAraValid() throws Exception {
-        joinStringBuilder.add("one", ",");
-        joinStringBuilder.add("two", "\n");
+		joinStringBuilder.add("one", ",");
+		joinStringBuilder.add("two", "\n");
 
-        String result = joinStringBuilder.build();
+		String result = joinStringBuilder.build();
 
-        assertEquals("one,two", result);
-    }
+		assertEquals("one,two", result);
+	}
 
-    @Test
-    public void lastIsInvalid() throws Exception {
-        joinStringBuilder.add("one", ",");
-        joinStringBuilder.add("two", "\n");
-        joinStringBuilder.add("null", "|");
+	@Test
+	public void lastIsInvalid() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("one", ",");
+		joinStringBuilder.add("two", "\n");
+		joinStringBuilder.add("null", "|");
 
-        String result = joinStringBuilder.build();
+		String result = joinStringBuilder.build();
 
-        assertEquals("one,two", result);
-    }
+		assertEquals("one,two", result);
+	}
 
-    @Test
-    public void lastTwoAreInvalid() throws Exception {
-        joinStringBuilder.add("one", ",");
-        joinStringBuilder.add("two", "\n");
-        joinStringBuilder.add("null", "|");
-        joinStringBuilder.add(null, "!");
+	@Test
+	public void lastTwoAreInvalid() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("one", ",");
+		joinStringBuilder.add("two", "\n");
+		joinStringBuilder.add("null", "|");
+		joinStringBuilder.add(null, "!");
 
-        String result = joinStringBuilder.build();
+		String result = joinStringBuilder.build();
 
-        assertEquals("one,two", result);
-    }
+		assertEquals("one,two", result);
+	}
 
-    @Test
-    public void allAreInvalid() throws Exception {
-        joinStringBuilder.add("null", "|");
-        joinStringBuilder.add(null, "!");
-        joinStringBuilder.add("", "$");
+	@Test
+	public void allAreInvalid() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("null", "|");
+		joinStringBuilder.add(null, "!");
+		joinStringBuilder.add("", "$");
 
-        String result = joinStringBuilder.build();
+		String result = joinStringBuilder.build();
 
-        assertEquals("", result);
-    }
+		assertEquals("", result);
 
-    @Test
-    public void invalidInTheMiddle() throws Exception {
-        joinStringBuilder.add("one", ",");
-        joinStringBuilder.add("null", "|");
-        joinStringBuilder.add("two", "\n");
+		joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add(null, "|");
+		joinStringBuilder.add(null, "!");
+		joinStringBuilder.add(null, "$");
 
-        String result = joinStringBuilder.build();
+		result = joinStringBuilder.build();
 
-        assertEquals("one,two", result);
-    }
+		assertEquals("", result);
 
-    @Test
-    public void validInTheMiddle() throws Exception {
-        joinStringBuilder.add("null", "|");
-        joinStringBuilder.add("one", ",");
-        joinStringBuilder.add(null, "!");
+	}
 
-        String result = joinStringBuilder.build();
+	@Test
+	public void invalidInTheMiddle() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("one", ",");
+		joinStringBuilder.add("null", "|");
+		joinStringBuilder.add("two", "\n");
 
-        assertEquals("one", result);
-    }
+		String result = joinStringBuilder.build();
 
-    @Test
-    public void validInvalid() throws Exception {
-        joinStringBuilder.add("one", ",");
-        joinStringBuilder.add("null", "|");
-        joinStringBuilder.add("two", "\n");
-        joinStringBuilder.add(null, "!");
+		assertEquals("one,two", result);
+	}
 
-        String result = joinStringBuilder.build();
+	@Test
+	public void validInTheMiddle() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("null", "|");
+		joinStringBuilder.add("one", ",");
+		joinStringBuilder.add(null, "!");
 
-        assertEquals("one,two", result);
-    }
+		String result = joinStringBuilder.build();
 
-    @Test
-    public void oneItem() throws Exception {
-        joinStringBuilder.add("one", ",");
-        String result = joinStringBuilder.build();
+		assertEquals("one", result);
+	}
 
-        assertEquals("one", result);
-    }
+	@Test
+	public void validInvalid() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("one", ",");
+		joinStringBuilder.add("null", "|");
+		joinStringBuilder.add("two", "\n");
+		joinStringBuilder.add(null, "!");
 
-    @Test
-    public void twoEmptyOneValid() throws Exception {
-        joinStringBuilder.add("", ",");
-        joinStringBuilder.add("", ",");
-        joinStringBuilder.add("123", ",");
+		String result = joinStringBuilder.build();
 
-        String result = joinStringBuilder.build();
+		assertEquals("one,two", result);
+	}
 
-        assertEquals("123", result);
-    }
+	@Test
+	public void oneItem() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("one", ",");
+		String result = joinStringBuilder.build();
 
-    @Test
-    public void twoEmptyOneValidAndOneEmpty() throws Exception {
-        joinStringBuilder.add("", ",");
-        joinStringBuilder.add("", ",");
-        joinStringBuilder.add("123", ",");
-        joinStringBuilder.add("", ",");
+		assertEquals("one", result);
+	}
 
-        String result = joinStringBuilder.build();
+	@Test
+	public void twoEmptyOneValid() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("", ",");
+		joinStringBuilder.add("", ",");
+		joinStringBuilder.add("123", ",");
 
-        assertEquals("123", result);
-    }
+		String result = joinStringBuilder.build();
+
+		assertEquals("123", result);
+	}
+
+	@Test
+	public void twoEmptyOneValidAndOneEmpty() {
+		JoinStringBuilder joinStringBuilder = new JoinStringBuilder();
+		joinStringBuilder.add("", ",");
+		joinStringBuilder.add("", ",");
+		joinStringBuilder.add("123", ",");
+		joinStringBuilder.add("", ",");
+
+		String result = joinStringBuilder.build();
+
+		assertEquals("123", result);
+	}
 }

@@ -1,26 +1,50 @@
 buildscript {
-    ext.kotlin_version = '1.3.50'
-    repositories {
-        google()
-        jcenter()
+	ext.kotlin_version = '1.3.50'
 
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+	ext.buildConfig = [
+			applicationPackage: 'ru.starksoft.commons',
+			applicationName   : 'commons',
+
+			minSdk            : 19,
+			targetSdk         : 29,
+			compileSdk        : 29,
+			version           : '1.0.0',
+	]
+
+	ext.versions = [
+			buildTools: '29.0.2',
+	]
+
+	repositories {
+		google()
+		jcenter()
+
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:3.5.1'
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+	}
+}
+
+plugins {
+	id "com.jfrog.bintray" version "1.7.3"
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()
-
-    }
+	repositories {
+		jcenter()
+		maven {
+			url 'https://maven.google.com/'
+			name 'Google'
+		}
+		maven {
+			url 'https://maven.fabric.io/public'
+		}
+		google()
+	}
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir
+	delete rootProject.buildDir
 }

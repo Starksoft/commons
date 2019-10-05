@@ -1,13 +1,19 @@
 package ru.starksoft.commons;
 
-import androidx.annotation.Nullable;
-
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class CollectionUtils {
+import androidx.annotation.Nullable;
+
+@SuppressWarnings("WeakerAccess")
+public final class CollectionUtils {
+
+	private CollectionUtils() {
+		throw new UnsupportedOperationException();
+	}
+
 	/**
 	 * Tell if an array contains specified value
 	 *
@@ -65,7 +71,7 @@ public class CollectionUtils {
 		return c;
 	}
 
-	public static boolean isEmpty(Collection<?> list) {
+	public static boolean isEmpty(@Nullable Collection<?> list) {
 		return list == null || list.isEmpty();
 	}
 }
