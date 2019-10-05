@@ -8,8 +8,8 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CacheDiffUtilTest {
 
@@ -84,7 +84,7 @@ public class CacheDiffUtilTest {
 		assertEquals(0, diffResult.getToRemove().size());
 		assertEquals(0, diffResult.getToUpdate().size());
 
-		assertTrue((endTime - startTime) < 3000);
+		assertTrue("time taken: " + (endTime - startTime), (endTime - startTime) < 3500);
 	}
 
 	@NonNull
