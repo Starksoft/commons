@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.Layout;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,9 +22,6 @@ import androidx.core.content.ContextCompat;
 
 @SuppressWarnings("WeakerAccess")
 public final class ViewUtils {
-
-	private static final int MIN_CLICK_INTERVAL = 600;
-	private static long lastClickTime;
 
 	private ViewUtils() {
 		throw new UnsupportedOperationException();
@@ -123,13 +118,6 @@ public final class ViewUtils {
 		//return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
 	}
 
-	public static boolean isSingleClicked() {
-		long currentClickTime = System.currentTimeMillis();
-		long elapsedTime = currentClickTime - lastClickTime;
-		lastClickTime = currentClickTime;
-		return elapsedTime > MIN_CLICK_INTERVAL;
-	}
-
 	//	public static boolean isLinearLayoutManagerAtEnd(@NonNull LinearLayoutManager layoutManager) {
 	//		int visibleItemCount = layoutManager.getChildCount();
 	//		int totalItemCount = layoutManager.getItemCount();
@@ -162,26 +150,6 @@ public final class ViewUtils {
 		}
 	}
 
-	public static void showToast(@NonNull Context context, int message, boolean longLength) {
-		Toast.makeText(context, message, longLength ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-	}
-
-	public static void showToast(@NonNull Context context, String message, boolean longLength) {
-		Toast.makeText(context, message, longLength ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-	}
-
-	public static void showToastInBottom(@NonNull Context context, String message, boolean longLength) {
-		Toast toast = Toast.makeText(context, message, longLength ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.BOTTOM, 0, 0);
-		toast.show();
-	}
-
-	public static void showToastInCenter(@NonNull Context context, String message, boolean longLength) {
-		Toast toast = Toast.makeText(context, message, longLength ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-	}
-
 	public static boolean isTextViewEllipsized(@NonNull TextView textView) {
 		Layout layout = textView.getLayout();
 		if (layout != null) {
@@ -194,6 +162,7 @@ public final class ViewUtils {
 		return false;
 	}
 
+	@NonNull
 	public static String getTextViewVisibleText(@NonNull TextView textView) {
 		Layout layout = textView.getLayout();
 		if (layout != null) {

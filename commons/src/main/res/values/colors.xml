@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<color name="snackbar_alert">#fff44336</color>
+	<color name="snackbar_confirm">#ff4caf50</color>
+	<color name="snackbar_info">#ff2195f3</color>
+	<color name="snackbar_warning">#ff323232</color>
+
+	<color name="swipe_color_1" >#44A8FF</color>
+	<color name="swipe_color_2" >#458FCF</color>
+	<color name="swipe_color_3" >#0E68B9</color>
+	<color name="swipe_color_4" >#125591</color>
+
+</resources>

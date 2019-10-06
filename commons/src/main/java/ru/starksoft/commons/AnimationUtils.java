@@ -10,6 +10,7 @@ public final class AnimationUtils {
 	private static final int ANIMATION_DURATION = 300;
 
 	private AnimationUtils() {
+		throw new UnsupportedOperationException();
 	}
 
 	public static void setVisibility(boolean show, @NonNull View... views) {

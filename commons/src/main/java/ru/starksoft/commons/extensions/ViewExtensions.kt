@@ -1,4 +1,4 @@
-package ru.obed.client.extensions
+package ru.starksoft.commons.extensions
 
 import android.text.Editable
 import android.text.TextWatcher
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.GONE
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputLayout
-import ru.starksoft.commons.extensions.resetError
 
 fun TextView?.addTextChangedListener(onTextChanged: ((text: CharSequence) -> Unit)) {
 	this?.addTextChangedListener(object : TextWatcher {
