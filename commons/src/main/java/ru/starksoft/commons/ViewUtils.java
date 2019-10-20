@@ -19,6 +19,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 @SuppressWarnings("WeakerAccess")
 public final class ViewUtils {
@@ -239,6 +240,13 @@ public final class ViewUtils {
 			return null;
 		}
 		return ContextCompat.getSystemService(context, InputMethodManager.class);
+	}
+
+	public static boolean isLinearLayoutManagerAtEnd(@NonNull LinearLayoutManager layoutManager) {
+		int visibleItemCount = layoutManager.getChildCount();
+		int totalItemCount = layoutManager.getItemCount();
+		int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+		return visibleItemCount + pastVisibleItems >= totalItemCount;
 	}
 
 	@IntDef({View.VISIBLE, View.INVISIBLE, View.GONE})
