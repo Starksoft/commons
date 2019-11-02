@@ -9,7 +9,6 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CacheDiffUtilTest {
 
@@ -28,9 +27,16 @@ public class CacheDiffUtilTest {
 
 		DiffResult<CacheEntry> diffResult = CacheDiffUtil.calculateDiff(oldList, newList);
 
-		CacheEntry cacheEntry = diffResult.getToAdd().get(0);
+		assertEquals(1, diffResult.getToAdd().size());
+		assertEquals(1, diffResult.getToRemove().size());
+		assertEquals(1, diffResult.getToUpdate().size());
 
-		assertEquals("4", cacheEntry.getEntryId());
+		// Добавили одну запись с id=4
+		assertEquals("4", diffResult.getToAdd().get(0).getEntryId());
+		// Удалили одну запись с id=2
+		assertEquals("2", diffResult.getToRemove().get(0));
+		// Изменили одну запись с id=3
+		assertEquals("3", diffResult.getToUpdate().get(0).getEntryId());
 	}
 
 	@Test
@@ -87,6 +93,22 @@ public class CacheDiffUtilTest {
 		//assertTrue("time taken: " + (endTime - startTime), (endTime - startTime) < 3500);
 	}
 
+	@Test
+	public void calculateBidDiffAndCheckChanges() {
+		List<CacheEntry> oldList = populate(30_000);
+		List<CacheEntry> newList = populate(2);
+
+		newList.add(new TestEntry(3, "new title"));
+
+		DiffResult<CacheEntry> diffResult = CacheDiffUtil.calculateDiff(oldList, newList);
+
+		assertEquals(0, diffResult.getToAdd().size());
+		assertEquals(29997, diffResult.getToRemove().size());
+		assertEquals(1, diffResult.getToUpdate().size());
+
+		//assertTrue("time taken: " + (endTime - startTime), (endTime - startTime) < 3500);
+	}
+
 	@NonNull
 	private ArrayList<CacheEntry> populate(int size) {
 		ArrayList<CacheEntry> result = new ArrayList<>();
@@ -104,7 +126,7 @@ public class CacheDiffUtilTest {
 		private final int id;
 		private final String title;
 
-		public TestEntry(int id, String title) {
+		TestEntry(int id, String title) {
 			this.id = id;
 			this.title = title;
 		}

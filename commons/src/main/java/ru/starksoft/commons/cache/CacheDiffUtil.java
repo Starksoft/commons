@@ -2,12 +2,12 @@ package ru.starksoft.commons.cache;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 @SuppressWarnings("WeakerAccess")
 public final class CacheDiffUtil {
@@ -69,7 +69,7 @@ public final class CacheDiffUtil {
 		Log.d(TAG, "calculateDiff: toUpdate=" + toUpdate.size());
 		Log.d(TAG, "calculateDiff: toRemove=" + toRemove.size());
 
-		Log.d(TAG, "calculateDiff: done in " + (System.currentTimeMillis() - startTime));
+		Log.d(TAG, "calculateDiff: done in " + (System.currentTimeMillis() - startTime) + " ms");
 
 		return new DiffResult<>(toAdd, toUpdate, toRemove);
 	}

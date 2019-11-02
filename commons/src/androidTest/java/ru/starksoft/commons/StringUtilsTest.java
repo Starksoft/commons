@@ -283,9 +283,9 @@ public class StringUtilsTest extends TestCase {
 		sb.append("123");
 		sb.append(",");
 
-		sb = StringUtils.removeLastSeparator(sb, ",");
+		StringBuilder sb2 = StringUtils.removeLastSeparator(sb, ",");
 
-		assertEquals("123,123", sb.toString());
+		assertEquals("123,123", sb2.toString());
 	}
 
 	@Test

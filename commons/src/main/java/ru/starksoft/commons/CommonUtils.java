@@ -8,9 +8,9 @@ import android.os.Looper;
 
 import java.util.Arrays;
 
-public final class Utils {
+public final class CommonUtils {
 
-    private Utils() {
+    private CommonUtils() {
         throw new UnsupportedOperationException();
     }
 

@@ -85,22 +85,13 @@ public class ViewUtilsTest {
 
 	@Test
 	public void dpToPx() {
-//		int ret = ViewUtils.dpToPx(1);
-//		assertEquals(4, ret);
+		//int ret = ViewUtils.dpToPx(1);
+		//assertEquals(4, ret);
 	}
 
 	@Test
 	public void pxToDp() {
 		//		int ret = ViewUtils.pxToDp(ApplicationProvider.getApplicationContext(), 4);
 		//		assertEquals(1, ret);
-	}
-
-	@Test
-	public void isSingleClicked() {
-		boolean ret = ViewUtils.isSingleClicked();
-		assertTrue(ret);
-
-		ret = ViewUtils.isSingleClicked();
-		assertFalse(ret);
 	}
 }
