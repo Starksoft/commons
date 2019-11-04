@@ -48,3 +48,22 @@ fun Array<View>.setVisibility(visible: Boolean) {
 fun View?.setVisibility(visible: Boolean) {
 	this?.visibility = if (visible) View.VISIBLE else GONE
 }
+
+fun Array<View>.show() {
+	for (view in this) {
+		view.show()
+	}
+}
+fun Array<View>.hide() {
+	for (view in this) {
+		view.hide()
+	}
+}
+
+fun View?.show() {
+	this?.setVisibility(true)
+}
+
+fun View?.hide() {
+	this?.setVisibility(false)
+}
