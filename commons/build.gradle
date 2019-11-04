@@ -34,7 +34,7 @@ android {
 ext.artifact = [
 		'groupId': 'ru.starksoft',
 		'id'     : 'commons',
-		'version': '1.0.4',
+		'version': '1.0.5',
 		'siteUrl': 'https://github.com/Starksoft/commons',
 		'gitUrl' : 'https://github.com/Starksoft/commons.git',
 		'repo'   : 'android-maven'

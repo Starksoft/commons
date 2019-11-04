@@ -54,6 +54,7 @@ fun Array<View>.show() {
 		view.show()
 	}
 }
+
 fun Array<View>.hide() {
 	for (view in this) {
 		view.hide()
@@ -66,4 +67,8 @@ fun View?.show() {
 
 fun View?.hide() {
 	this?.setVisibility(false)
+}
+
+fun View?.invisible() {
+	this?.visibility = View.INVISIBLE
 }
