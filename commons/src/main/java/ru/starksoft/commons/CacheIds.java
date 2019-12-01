@@ -8,10 +8,6 @@ public final class CacheIds {
 
 	private final SimpleArrayMap<String, Integer> map = new SimpleArrayMap<>();
 
-	private CacheIds() {
-		throw new UnsupportedOperationException();
-	}
-
 	public final int getValue(@NonNull String key) {
 		Integer value;
 
