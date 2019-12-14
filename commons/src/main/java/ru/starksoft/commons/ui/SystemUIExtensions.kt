@@ -21,7 +21,8 @@ fun Activity.setupFullscreen() {
 		}
 	}
 	if (Build.VERSION.SDK_INT >= 19) {
-		window.decorView.systemUiVisibility = getUIShowedFlags()
+		val childAt = (window.decorView as ViewGroup).getChildAt(0)
+		childAt.systemUiVisibility = getUIShowedFlags()
 	}
 	if (Build.VERSION.SDK_INT >= 21) {
 		window.apply {
