@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package ru.starksoft.commons.extensions
 
 import android.annotation.SuppressLint
@@ -43,8 +45,8 @@ fun TextInputLayout.setTextWithTrim(input: String?): String {
 }
 
 fun TextInputLayout.validateEmpty(): Boolean {
-
-	val text = this.editText?.text
+	resetError()
+	val text = editText?.text
 
 	return if (text.isNullOrBlank()) {
 		this.error = "Поле не должно быть пустым или содержать только пробелы"
