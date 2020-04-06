@@ -1,12 +1,16 @@
 package ru.starksoft.commons;
 
-import androidx.annotation.NonNull;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class EncodeUtils {
+import androidx.annotation.NonNull;
+public final class EncodeUtils {
 
+	private EncodeUtils() {
+		throw new UnsupportedOperationException();
+	}
+
+	@NonNull
 	public static String md5(@NonNull String input) {
 		final String MD5 = "MD5";
 		try {

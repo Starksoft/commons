@@ -83,6 +83,7 @@ public final class JoinStringBuilder {
 			return text + delimiter;
 		}
 
+		@NonNull
 		@Override
 		public String toString() {
 			return "Element{" + "text='" + text + '\'' + ", delimiter='" + delimiter + '\'' + '}';

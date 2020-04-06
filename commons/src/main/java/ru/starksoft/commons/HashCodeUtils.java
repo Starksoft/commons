@@ -1,9 +1,10 @@
 package ru.starksoft.commons;
 
-import androidx.annotation.Nullable;
-
 import java.util.Arrays;
 
+import androidx.annotation.Nullable;
+
+@SuppressWarnings("WeakerAccess")
 public final class HashCodeUtils {
 
 	public static final int NONE_HASHCODE = 0;
