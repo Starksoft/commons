@@ -8,6 +8,22 @@ object ThreadUtil {
 	private const val TAG = "ThreadUtil"
 
 	@JvmStatic
+	fun checkNotMainThread() {
+		checkNotOnMainThread()
+	}
+
+	@JvmStatic
+	fun checkMainThread() {
+		checkOnMainThread()
+	}
+
+	@JvmStatic
+	fun isMainThread(): Boolean {
+		return isOnMainThread()
+	}
+
+	@JvmStatic
+	@Deprecated("Replaced", replaceWith = ReplaceWith("checkNotMainThread()"))
 	fun checkNotOnMainThread() {
 		if (isOnMainThread()) {
 			Log.d(TAG, "${Thread.currentThread().name} ### checkOnMainThread: ")
@@ -16,6 +32,7 @@ object ThreadUtil {
 	}
 
 	@JvmStatic
+	@Deprecated("Replaced", replaceWith = ReplaceWith("checkMainThread()"))
 	fun checkOnMainThread() {
 		if (!isOnMainThread()) {
 			Log.d(TAG, "${Thread.currentThread().name} ### checkOnMainThread: ")
@@ -24,6 +41,7 @@ object ThreadUtil {
 	}
 
 	@JvmStatic
+	@Deprecated("Replaced", replaceWith = ReplaceWith("isMainThread()"))
 	fun isOnMainThread(): Boolean {
 		return Looper.myLooper() == Looper.getMainLooper()
 	}
