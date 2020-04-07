@@ -15,7 +15,9 @@ import java.text.DecimalFormatSymbols;
 import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -293,5 +295,23 @@ public class StringUtils {
 			return str;
 		}
 		return str.toLowerCase();
+	}
+
+	@NonNull
+	public static List<Integer> findWord(@NonNull String textString, @NonNull String word) {
+		List<Integer> indexes = new ArrayList<>();
+		String lowerCaseTextString = textString.toLowerCase();
+		String lowerCaseWord = word.toLowerCase();
+		int wordLength = 0;
+
+		int index = 0;
+		while (index != -1) {
+			index = lowerCaseTextString.indexOf(lowerCaseWord, index + wordLength);
+			if (index != -1) {
+				indexes.add(index);
+			}
+			wordLength = word.length();
+		}
+		return indexes;
 	}
 }

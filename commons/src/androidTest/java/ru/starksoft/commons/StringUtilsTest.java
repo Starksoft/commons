@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -376,5 +377,17 @@ public class StringUtilsTest extends TestCase {
 
 		out = StringUtils.join(", ", null, null, null, null, null, null);
 		assertEquals(null, out);
+	}
+
+	@Test
+	public void findWord() {
+		List<Integer> words = StringUtils.findWord("{}{}{}{}", "{}");
+		assertEquals(4, words.size());
+
+		words = StringUtils.findWord("{}", "{}");
+		assertEquals(1, words.size());
+
+		words = StringUtils.findWord("124", "{}");
+		assertEquals(0, words.size());
 	}
 }
