@@ -12,7 +12,7 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import ru.starksoft.commons.R;
-import ru.starksoft.commons.ViewUtils;
+import ru.starksoft.commons.ui.ViewUtils;
 
 public final class ColoredSnackBar {
 

@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.text;
 
 import android.graphics.Typeface;
 import android.text.Spannable;

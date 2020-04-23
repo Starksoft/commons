@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import ru.starksoft.commons.text.StringUtils;
 
 @SuppressWarnings("WeakerAccess")
 public final class ViewUtils {

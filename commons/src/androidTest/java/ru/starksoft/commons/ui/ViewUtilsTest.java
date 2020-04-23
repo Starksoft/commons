@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.ui;
 
 import android.view.View;
 
@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import ru.starksoft.commons.ui.ViewUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

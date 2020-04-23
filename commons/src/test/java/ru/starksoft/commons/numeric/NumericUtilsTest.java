@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.numeric;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.text;
 
 import java.util.ArrayList;
 import java.util.List;

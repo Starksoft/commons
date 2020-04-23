@@ -1,7 +1,8 @@
-package ru.starksoft.commons
+package ru.starksoft.commons.ui
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import ru.starksoft.commons.BuildConfig
 import kotlin.math.abs
 
 object RecyclerViewHelper {

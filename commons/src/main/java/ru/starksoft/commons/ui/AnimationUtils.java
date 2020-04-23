@@ -1,9 +1,10 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.ui;
 
 import android.animation.Animator;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import ru.starksoft.commons.ui.ViewUtils;
 
 public final class AnimationUtils {
 

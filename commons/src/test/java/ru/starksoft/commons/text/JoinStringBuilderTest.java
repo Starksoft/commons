@@ -1,6 +1,8 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.text;
 
 import org.junit.Test;
+
+import ru.starksoft.commons.text.JoinStringBuilder;
 
 import static junit.framework.Assert.assertEquals;
 

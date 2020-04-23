@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.ui;
 
 import android.text.TextUtils;
 import android.util.Log;

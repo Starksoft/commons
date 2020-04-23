@@ -1,4 +1,4 @@
-package ru.starksoft.commons;
+package ru.starksoft.commons.text;
 
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import ru.starksoft.commons.text.StringUtils;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
