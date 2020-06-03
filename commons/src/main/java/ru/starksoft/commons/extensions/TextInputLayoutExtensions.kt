@@ -44,11 +44,12 @@ fun TextInputLayout.setTextWithTrim(input: String?): String {
 	} ?: ""
 }
 
-fun TextInputLayout.validateEmpty(): Boolean {
-	resetError()
-	val text = editText?.text
+fun TextInputLayout.validateEmpty(resetError: Boolean): Boolean {
+	if (resetError) {
+		resetError()
+	}
 
-	return if (text.isNullOrBlank()) {
+	return if (editText?.text.isNullOrBlank()) {
 		this.error = "Поле не должно быть пустым или содержать только пробелы"
 		false
 	} else {
@@ -57,10 +58,7 @@ fun TextInputLayout.validateEmpty(): Boolean {
 }
 
 fun TextInputLayout.validateRegex(regex: Regex): Boolean {
-
-	val text = this.editText?.text.toString()
-
-	return if (!regex.matches(text)) {
+	return if (!regex.matches(editText?.text.toString())) {
 		this.error = "Недопустимый ввод"
 		false
 	} else {
