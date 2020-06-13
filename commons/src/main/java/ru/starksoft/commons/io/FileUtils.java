@@ -3,6 +3,11 @@ package ru.starksoft.commons.io;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import androidx.annotation.NonNull;
 
@@ -36,5 +41,17 @@ public final class FileUtils {
 			}
 		}
 		return success;
+	}
+
+	public static void copy(@NonNull File src, @NonNull File dst) throws IOException {
+		try (InputStream in = new FileInputStream(src)) {
+			try (OutputStream out = new FileOutputStream(dst)) {
+				byte[] buf = new byte[1024];
+				int len;
+				while ((len = in.read(buf)) > 0) {
+					out.write(buf, 0, len);
+				}
+			}
+		}
 	}
 }
