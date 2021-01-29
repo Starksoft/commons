@@ -18,12 +18,12 @@ import kotlin.LazyThreadSafetyMode.NONE
 @Suppress("MemberVisibilityCanBePrivate")
 object NotificationHelper {
 
-	@JvmStatic
-	fun newBuilder(context: Context): Builder {
-		return Builder(context)
-	}
+    @JvmStatic
+    fun newBuilder(context: Context): Builder {
+        return Builder(context)
+    }
 
-	data class Builder constructor(
+    data class Builder constructor(
 		private val context: Context,
 		private var id: Int = 0,
 		private var icon: Int = 0,
@@ -42,121 +42,131 @@ object NotificationHelper {
 		private var channel: NotificationChannel? = null
 
 	) {
-		private val notificationManager by lazy(NONE) { ContextCompat.getSystemService(context, NotificationManager::class.java)!! }
 
-		fun defaultSound(): Builder {
-			defaultSound = true
-			return this
-		}
+        private val notificationManager by lazy(NONE) {
+            ContextCompat.getSystemService(
+				context,
+				NotificationManager::class.java
+			)!!
+        }
 
-		fun soundUri(soundUri: Uri): Builder {
-			this.soundUri = soundUri
-			return this
-		}
+        fun defaultSound(): Builder {
+            defaultSound = true
+            return this
+        }
 
-		fun title(title: String): Builder {
-			this.title = title
-			return this
-		}
+        fun soundUri(soundUri: Uri): Builder {
+            this.soundUri = soundUri
+            return this
+        }
 
-		fun message(message: String): Builder {
-			this.message = message
-			return this
-		}
+        fun title(title: String): Builder {
+            this.title = title
+            return this
+        }
 
-		fun autoCancel(): Builder {
-			autoCancel = true
-			return this
-		}
+        fun message(message: String): Builder {
+            this.message = message
+            return this
+        }
 
-		fun ongoing(ongoing: Boolean): Builder {
-			this.ongoing = ongoing
-			return this
-		}
+        fun autoCancel(): Builder {
+            autoCancel = true
+            return this
+        }
 
-		fun localOnly(localOnly: Boolean): Builder {
-			this.localOnly = localOnly
-			return this
-		}
+        fun ongoing(ongoing: Boolean): Builder {
+            this.ongoing = ongoing
+            return this
+        }
 
-		fun id(id: Int): Builder {
-			this.id = id
-			return this
-		}
+        fun localOnly(localOnly: Boolean): Builder {
+            this.localOnly = localOnly
+            return this
+        }
 
-		fun icon(@DrawableRes icon: Int): Builder {
-			this.icon = icon
-			return this
-		}
+        fun id(id: Int): Builder {
+            this.id = id
+            return this
+        }
 
-		fun largeIcon(largeIcon: Bitmap): Builder {
-			this.largeIcon = largeIcon
-			return this
-		}
+        fun icon(
+			@DrawableRes
+			icon: Int
+		): Builder {
+            this.icon = icon
+            return this
+        }
 
-		fun channelName(channelName: String): Builder {
-			this.channelName = channelName
-			return this
-		}
+        fun largeIcon(largeIcon: Bitmap): Builder {
+            this.largeIcon = largeIcon
+            return this
+        }
 
-		fun pendingIntent(pendingIntent: PendingIntent): Builder {
-			this.pendingIntent = pendingIntent
-			return this
-		}
+        fun channelName(channelName: String): Builder {
+            this.channelName = channelName
+            return this
+        }
 
-		fun channelId(channelId: String): Builder {
-			this.channelId = channelId
-			return this
-		}
+        fun pendingIntent(pendingIntent: PendingIntent): Builder {
+            this.pendingIntent = pendingIntent
+            return this
+        }
 
-		fun style(style: NotificationCompat.Style): Builder {
-			this.style = style
-			return this
-		}
+        fun channelId(channelId: String): Builder {
+            this.channelId = channelId
+            return this
+        }
 
-		fun show() {
-			notificationManager.notify(id, build())
-		}
+        fun style(style: NotificationCompat.Style): Builder {
+            this.style = style
+            return this
+        }
 
-		fun build(): Notification {
-			check(id >= 0) { "Invalid id" }
-			check(icon >= 1) { "Invalid icon" }
-			check(!title.isNullOrBlank()) { "Empty title" }
-			check(!message.isNullOrBlank()) { "Empty message" }
-			check(!channelId.isNullOrBlank()) { "Empty channelId" }
-			check(!channelName.isNullOrBlank()) { "Empty channelName" }
+        fun show() {
+            notificationManager.notify(id, build())
+        }
 
-			val notificationBuilder = NotificationCompat.Builder(context, channelId!!)
+        fun build(): Notification {
+            check(id >= 0) { "Invalid id" }
+            check(icon >= 1) { "Invalid icon" }
+            check(!title.isNullOrBlank()) { "Empty title" }
+            check(!message.isNullOrBlank()) { "Empty message" }
+            check(!channelId.isNullOrBlank()) { "Empty channelId" }
+            check(!channelName.isNullOrBlank()) { "Empty channelName" }
 
-			if (soundUri != null) {
-				notificationBuilder.setSound(soundUri)
-			} else if (defaultSound) {
-				val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-				notificationBuilder.setSound(defaultSoundUri)
-			}
+            val notificationBuilder = NotificationCompat.Builder(context, channelId!!)
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				if (channel != null) {
-					val notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
-					notificationChannel.enableLights(false)
-					notificationChannel.lightColor = Color.BLUE
-					notificationChannel.enableVibration(false)
+            if (soundUri != null) {
+                notificationBuilder.setSound(soundUri)
+            } else if (defaultSound) {
+                val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                notificationBuilder.setSound(defaultSoundUri)
+            }
 
-					notificationManager.createNotificationChannel(notificationChannel)
-				} else {
-					notificationManager.createNotificationChannel(channel!!)
-				}
-			}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (channel != null) {
+                    val notificationChannel =
+                        NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
+                    notificationChannel.enableLights(false)
+                    notificationChannel.lightColor = Color.BLUE
+                    notificationChannel.enableVibration(false)
 
-			return notificationBuilder.setSmallIcon(icon)
-				.setLargeIcon(largeIcon)
-				.setStyle(style)
-				.setLocalOnly(localOnly)
-				.setContentIntent(pendingIntent)
-				.setContentTitle(title)
-				.setContentText(message)
-				.setAutoCancel(autoCancel)
-				.build()
-		}
-	}
+                    notificationManager.createNotificationChannel(notificationChannel)
+                } else {
+                    notificationManager.createNotificationChannel(channel!!)
+                }
+            }
+
+            return notificationBuilder.setSmallIcon(icon)
+                .setLargeIcon(largeIcon)
+                .setStyle(style)
+                .setLocalOnly(localOnly)
+                .setContentIntent(pendingIntent)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(autoCancel)
+                .build()
+        }
+    }
 }

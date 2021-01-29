@@ -37,12 +37,12 @@ package ru.starksoft.commons.optional.function;
  * @since 1.8
  */
 @FunctionalInterface
-public interface Supplier <T> {
+public interface Supplier<T> {
 
-	/**
-	 * Gets a result.
-	 *
-	 * @return a result
-	 */
-	T get();
+    /**
+     * Gets a result.
+     *
+     * @return a result
+     */
+    T get();
 }
