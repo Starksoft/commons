@@ -1,5 +1,7 @@
 package ru.starksoft.commons.logger;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import java.io.File;
@@ -22,133 +24,159 @@ import ru.starksoft.commons.callback.Func0;
 
 public abstract class AbstractLogger {
 
-	private static final boolean LOG_ENABLED = true;
-	private static final String LOG_DELIMITER = ": ";
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-	private final SimpleDateFormat logDateFormat;
-	private final File logDir;
-	private File logFile;
+    private static final String LOG_DELIMITER = ": ";
+    private static final String LOG_FOLDER = "logs";
+    private static final String LOG_FILE = "log.txt";
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final SimpleDateFormat logDateFormat;
+    private final File logDir;
+    private final boolean loggingEnabled;
+    private File logFile;
 
-	public AbstractLogger(@NonNull File logDir) {
-		this.logDir = logDir;
-		logDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
-	}
+    public AbstractLogger(@NonNull File logDir) {
+        this(logDir, true);
+    }
 
-	@NonNull
-	static String replaceLogPlaceholders(@NonNull String input, @Nullable Func0<Object> args) {
-		int indexOf = input.indexOf("{}");
+    public AbstractLogger(@NonNull File logDir, boolean loggingEnabled) {
+        this.logDir = logDir;
+        this.loggingEnabled = loggingEnabled;
+        logDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
+    }
 
-		if (indexOf >= 0 && args != null) {
-			@Nullable Object call = args.call();
+    @NonNull
+    static String replaceLogPlaceholders(@NonNull String input, @Nullable Func0<Object> args) {
+        int indexOf = input.indexOf("{}");
 
-			String argsString;
-			if (call instanceof List) {
-				List collection = (List) call;
+        if (indexOf >= 0 && args != null) {
+            @Nullable
+            Object call = args.call();
 
-				int argSize = collection.size();
-				int placeHoldersSize = findWord(input, "{}").size();
-				if (argSize != placeHoldersSize) {
-					throw new IllegalArgumentException(
-							"{} placeholders (" + placeHoldersSize + ") and arguments (" + argSize + ") mismatch");
-				}
+            String argsString;
+            if (call instanceof List) {
+                List collection = (List) call;
 
-				for (int i = 0; i < placeHoldersSize; i++) {
-					Object o = collection.get(i);
-					String s = o == null ? "null" : o.toString();
-					input = input.replaceFirst(Pattern.quote("{}"), Matcher.quoteReplacement(s));
-				}
+                int argSize = collection.size();
+                int placeHoldersSize = findWord(input, "{}").size();
 
-			} else {
-				if (call == null) {
-					argsString = "null";
-				} else {
-					argsString = call.toString();
-				}
+                if (argSize != placeHoldersSize) {
+                    throw new IllegalArgumentException("{} placeholders (" +
+                                                       placeHoldersSize +
+                                                       ") and arguments (" +
+                                                       argSize +
+                                                       ") mismatch");
+                }
 
-				return input.replace("{}", argsString);
-			}
-		}
+                for (int i = 0; i < placeHoldersSize; i++) {
+                    Object o = collection.get(i);
+                    String s = o == null ? "null" : o.toString();
+                    input = input.replaceFirst(Pattern.quote("{}"), Matcher.quoteReplacement(s));
+                }
 
-		return input;
-	}
+            } else {
+                if (call == null) {
+                    argsString = "null";
+                } else {
+                    argsString = call.toString();
+                }
 
-	@NonNull
-	static List<Integer> findWord(@NonNull String textString, @NonNull String word) {
-		List<Integer> indexes = new ArrayList<>();
-		String lowerCaseTextString = textString.toLowerCase();
-		String lowerCaseWord = word.toLowerCase();
-		int wordLength = 0;
+                return input.replace("{}", argsString);
+            }
+        }
 
-		int index = 0;
-		while (index != -1) {
-			index = lowerCaseTextString.indexOf(lowerCaseWord, index + wordLength);
-			if (index != -1) {
-				indexes.add(index);
-			}
-			wordLength = word.length();
-		}
-		return indexes;
-	}
+        return input;
+    }
 
-	public final void log(@NonNull LogType logType, @NonNull final String message) {
-		log(logType, message, null);
-	}
+    @NonNull
+    @SuppressWarnings("SameParameterValue")
+    static List<Integer> findWord(@NonNull String textString, @NonNull String word) {
+        List<Integer> indexes = new ArrayList<>();
+        String lowerCaseTextString = textString.toLowerCase();
+        String lowerCaseWord = word.toLowerCase();
+        int wordLength = 0;
 
-	public final void log(@NonNull LogType logType, @NonNull final String message, @Nullable Func0<Object> args) {
-		if (!LOG_ENABLED) {
-			return;
-		}
+        int index = 0;
+        while (index != -1) {
+            index = lowerCaseTextString.indexOf(lowerCaseWord, index + wordLength);
+            if (index != -1) {
+                indexes.add(index);
+            }
+            wordLength = word.length();
+        }
+        return indexes;
+    }
 
-		executorService.submit(() -> {
-			try {
-				printMessage(logType, replaceLogPlaceholders(message, args));
-			} catch (Exception e) {
-				e.printStackTrace();
-				printMessage(logType, "Exception in Logger! e=" + Log.getStackTraceString(e));
-			}
-		});
-	}
+    public final void log(@NonNull LogType logType, @NonNull final String message) {
+        log(logType, message, null);
+    }
 
-	private void printMessage(@NonNull LogType logType, String msg) {
-		if (BuildConfig.DEBUG) {
-			Log.d(logType.name(), msg);
-		}
+    public final void log(@NonNull LogType logType, @NonNull final String message, @Nullable Func0<Object> args) {
+        if (!loggingEnabled) {
+            return;
+        }
 
-		writeLogToFile(logType.name() + LOG_DELIMITER + msg);
-	}
+        executorService.submit(() -> {
+            try {
+                printMessage(logType, replaceLogPlaceholders(message, args));
+            } catch (Exception e) {
+                e.printStackTrace();
+                printMessage(logType, "Exception in Logger! e=" + Log.getStackTraceString(e));
+            }
+        });
+    }
 
-	@NonNull
-	private File getLogFile() {
-		if (logFile == null) {
-			File logFolder = new File(logDir + File.separator + "logs");
-			if (!logFolder.exists()) {
-				if (!logFolder.mkdirs()) {
-					throw new IllegalStateException("Cant create log folder");
-				}
-			}
+    private void printMessage(@NonNull LogType logType, String msg) {
+        if (BuildConfig.DEBUG) {
+            Log.d(logType.name(), msg);
+        }
 
-			logFile = new File(logFolder, "log.txt");
-		}
-		return logFile;
-	}
+        writeLogToFile(logType.name() + LOG_DELIMITER + msg);
+    }
 
-	private void writeLogToFile(@NonNull String text) {
-		try (FileWriter fWriter = new FileWriter(getLogFile(), true)) {
+    @NonNull
+    private File getLogFile() {
+        if (logFile == null) {
+            File logFolder = new File(logDir + "/" + LOG_FOLDER);
+            if (!logFolder.exists()) {
+                if (!logFolder.mkdirs()) {
+                    throw new IllegalStateException("Cant create log folder");
+                }
+            }
 
-			fWriter.write(logDateFormat.format(new Date()));
-			fWriter.write(LOG_DELIMITER);
-			fWriter.write(text);
-			fWriter.write("\n");
-			fWriter.flush();
+            logFile = new File(logFolder, LOG_FILE);
+        }
+        return logFile;
+    }
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public long getLogFileSize() {
+        return getLogFile().length();
+    }
 
-	public interface LogType {
+    @NonNull
+    public Uri getFileUri(@NonNull Context context) {
+        return Uri.parse("content://" + context.getPackageName() + ".fileprovider/" + LOG_FOLDER + "/" + LOG_FILE);
+    }
 
-		@NonNull
-		String name();
-	}
+    public synchronized boolean clear() {
+        return getLogFile().delete();
+    }
+
+    private synchronized void writeLogToFile(@NonNull String text) {
+        try (FileWriter fWriter = new FileWriter(getLogFile(), true)) {
+
+            fWriter.write(logDateFormat.format(new Date()));
+            fWriter.write(LOG_DELIMITER);
+            fWriter.write(text);
+            fWriter.write("\n");
+            fWriter.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public interface LogType {
+
+        @NonNull
+        String name();
+    }
 }
