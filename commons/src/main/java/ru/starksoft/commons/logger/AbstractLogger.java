@@ -31,15 +31,17 @@ public abstract class AbstractLogger {
     private final SimpleDateFormat logDateFormat;
     private final File logDir;
     private final boolean loggingEnabled;
+    private final boolean logcatEnabled;
     private File logFile;
 
     public AbstractLogger(@NonNull File logDir) {
-        this(logDir, true);
+        this(logDir, true, false);
     }
 
-    public AbstractLogger(@NonNull File logDir, boolean loggingEnabled) {
+    public AbstractLogger(@NonNull File logDir, boolean loggingEnabled, boolean logcatEnabled) {
         this.logDir = logDir;
         this.loggingEnabled = loggingEnabled;
+        this.logcatEnabled = logcatEnabled;
         logDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
     }
 
@@ -125,7 +127,7 @@ public abstract class AbstractLogger {
     }
 
     private void printMessage(@NonNull LogType logType, String msg) {
-        if (BuildConfig.DEBUG) {
+        if (logcatEnabled) {
             Log.d(logType.name(), msg);
         }
 
