@@ -58,7 +58,7 @@ public abstract class AbstractLogger {
                 int argSize = array.length;
                 int placeHoldersSize = findWord(input, "{}").size();
 
-                checkArgsAndPlaceholders(argSize, placeHoldersSize);
+                checkArgsAndPlaceholders(input, argSize, placeHoldersSize);
 
                 for (int i = 0; i < placeHoldersSize; i++) {
                     Object o = array[i];
@@ -71,7 +71,7 @@ public abstract class AbstractLogger {
                 int argSize = collection.size();
                 int placeHoldersSize = findWord(input, "{}").size();
 
-                checkArgsAndPlaceholders(argSize, placeHoldersSize);
+                checkArgsAndPlaceholders(input, argSize, placeHoldersSize);
 
                 for (int i = 0; i < placeHoldersSize; i++) {
                     Object o = collection.get(i);
@@ -99,13 +99,15 @@ public abstract class AbstractLogger {
         return input;
     }
 
-    private static void checkArgsAndPlaceholders(int argSize, int placeHoldersSize) {
+    private static void checkArgsAndPlaceholders(@NonNull String input, int argSize, int placeHoldersSize) {
         if (argSize != placeHoldersSize) {
             throw new IllegalArgumentException("{} placeholders (" +
                                                placeHoldersSize +
                                                ") and arguments (" +
                                                argSize +
-                                               ") mismatch");
+                                               ") mismatch. Message: \"" +
+                                               input +
+                                               "\"");
         }
     }
 
