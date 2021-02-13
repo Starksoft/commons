@@ -28,16 +28,15 @@ public class AbstractLoggerTest {
         result = replaceLogPlaceholders("message with placeholder {}", () -> null);
         assertEquals("message with placeholder null", result);
 
-        result = replaceLogPlaceholders(
-                "proceedOrderIfSplitPayment(): Error sending order={}, e={}",
-                () -> Arrays.asList(
-                        "Возникла неизвестная ошибка в процессе отправки заказа",
-                        "android.os.NetworkOnMainThreadException\n" +
-                        "\tat android.os.StrictMode$AndroidBlockGuardPolicy.onNetwork(StrictMode.java:1605)\n" +
-                        "\tat java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:116)\n" +
-                        "\tat java.net.SocketOutputStream.write(SocketOutputStream.java:161)\n" +
-                        "\tat okio.OutputStreamSink.write(JvmOkio.kt:53)"
-                )
+        result = replaceLogPlaceholders("proceedOrderIfSplitPayment(): Error sending order={}, e={}",
+                                        () -> Arrays.asList(
+                                                "Возникла неизвестная ошибка в процессе отправки заказа",
+                                                "android.os.NetworkOnMainThreadException\n" +
+                                                "\tat android.os.StrictMode$AndroidBlockGuardPolicy.onNetwork(StrictMode.java:1605)\n" +
+                                                "\tat java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:116)\n" +
+                                                "\tat java.net.SocketOutputStream.write(SocketOutputStream.java:161)\n" +
+                                                "\tat okio.OutputStreamSink.write(JvmOkio.kt:53)"
+                                        )
         );
         assertEquals(
                 "proceedOrderIfSplitPayment(): Error sending order=Возникла неизвестная ошибка в процессе отправки заказа, e=android.os.NetworkOnMainThreadException\n" +
@@ -75,6 +74,16 @@ public class AbstractLoggerTest {
         assertEquals("1=one, 2=two, 3=null, 4=four, 5=null", result);
     }
 
+    @Test
+    public void replaceMultiplePlaceholdersVararg() {
+        testVararg("one", "two", "three");
+    }
+
+    private void testVararg(String... args) {
+        String result = replaceLogPlaceholders("1={}, 2={}, 3={}", () -> args);
+        assertEquals("1=one, 2=two, 3=three", result);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void replaceMultiplePlaceholdersMismatch() {
         List<String> data = new ArrayList<>();
@@ -84,6 +93,17 @@ public class AbstractLoggerTest {
 
         String result = replaceLogPlaceholders("1={}, 2={}", () -> data);
         assertEquals("1=one, 2=two, 3=three", result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void replaceMultiplePlaceholdersMismatch2() {
+        List<String> data = new ArrayList<>();
+        data.add("one");
+        data.add("two");
+        data.add("three");
+
+        String result = replaceLogPlaceholders("test", () -> data);
+        assertEquals("test", result);
     }
 
     @Test

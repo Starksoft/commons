@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import ru.starksoft.commons.BuildConfig;
 import ru.starksoft.commons.callback.Func0;
 
 public abstract class AbstractLogger {
@@ -46,32 +45,37 @@ public abstract class AbstractLogger {
     }
 
     @NonNull
+    @SuppressWarnings("rawtypes")
     static String replaceLogPlaceholders(@NonNull String input, @Nullable Func0<Object> args) {
-        int indexOf = input.indexOf("{}");
-
-        if (indexOf >= 0 && args != null) {
+        if (args != null) {
             @Nullable
             Object call = args.call();
 
             String argsString;
-            if (call instanceof List) {
+            if (call != null && call.getClass().isArray()) {
+                Object[] array = (Object[]) call;
+
+                int argSize = array.length;
+                int placeHoldersSize = findWord(input, "{}").size();
+
+                checkArgsAndPlaceholders(argSize, placeHoldersSize);
+
+                for (int i = 0; i < placeHoldersSize; i++) {
+                    Object o = array[i];
+                    input = replaceStringWithObject(input, o);
+                }
+
+            } else if (call instanceof List) {
                 List collection = (List) call;
 
                 int argSize = collection.size();
                 int placeHoldersSize = findWord(input, "{}").size();
 
-                if (argSize != placeHoldersSize) {
-                    throw new IllegalArgumentException("{} placeholders (" +
-                                                       placeHoldersSize +
-                                                       ") and arguments (" +
-                                                       argSize +
-                                                       ") mismatch");
-                }
+                checkArgsAndPlaceholders(argSize, placeHoldersSize);
 
                 for (int i = 0; i < placeHoldersSize; i++) {
                     Object o = collection.get(i);
-                    String s = o == null ? "null" : o.toString();
-                    input = input.replaceFirst(Pattern.quote("{}"), Matcher.quoteReplacement(s));
+                    input = replaceStringWithObject(input, o);
                 }
 
             } else {
@@ -86,6 +90,23 @@ public abstract class AbstractLogger {
         }
 
         return input;
+    }
+
+    @NonNull
+    private static String replaceStringWithObject(@NonNull String input, Object o) {
+        String s = o == null ? "null" : o.toString();
+        input = input.replaceFirst(Pattern.quote("{}"), Matcher.quoteReplacement(s));
+        return input;
+    }
+
+    private static void checkArgsAndPlaceholders(int argSize, int placeHoldersSize) {
+        if (argSize != placeHoldersSize) {
+            throw new IllegalArgumentException("{} placeholders (" +
+                                               placeHoldersSize +
+                                               ") and arguments (" +
+                                               argSize +
+                                               ") mismatch");
+        }
     }
 
     @NonNull
@@ -107,12 +128,16 @@ public abstract class AbstractLogger {
         return indexes;
     }
 
-    public final void log(@NonNull LogType logType, @NonNull final String message) {
+    public final void log(@NonNull LogType logType, @NonNull String message) {
         log(logType, message, null);
     }
 
+    public final void logException(@NonNull LogType logType, @NonNull Throwable t) {
+        log(logType, Log.getStackTraceString(t));
+    }
+
     public final void log(@NonNull LogType logType, @NonNull final String message, @Nullable Func0<Object> args) {
-        if (!loggingEnabled) {
+        if (!loggingEnabled || !logType.isEnabled()) {
             return;
         }
 
@@ -180,5 +205,7 @@ public abstract class AbstractLogger {
 
         @NonNull
         String name();
+
+        boolean isEnabled();
     }
 }
