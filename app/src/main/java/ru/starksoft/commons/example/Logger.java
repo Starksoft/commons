@@ -9,8 +9,8 @@ import ru.starksoft.commons.logger.AbstractLogger;
 
 public final class Logger extends AbstractLogger {
 
-    public Logger(@NonNull Context context) {
-        super(context.getFilesDir(), true, BuildConfig.DEBUG);
+    public Logger(@NonNull Context context, @NonNull String fileName) {
+        super(context.getFilesDir(), fileName, BuildConfig.DEBUG, true);
     }
 
     public void logMisc(@NonNull String message) {

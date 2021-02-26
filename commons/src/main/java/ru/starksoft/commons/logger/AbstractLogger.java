@@ -26,22 +26,39 @@ public abstract class AbstractLogger {
     private static final String LOG_DELIMITER = ": ";
     private static final String LOG_FOLDER = "logs";
     private static final String LOG_FILE = "log.txt";
+    private final static String PATTERN = "yyyy.MM.dd HH:mm:ss";
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final SimpleDateFormat logDateFormat;
-    private final File logDir;
-    private final boolean loggingEnabled;
     private final boolean logcatEnabled;
-    private File logFile;
+    private final boolean printThreadName;
+    private final File logFile;
 
-    public AbstractLogger(@NonNull File logDir) {
-        this(logDir, true, false);
+    public AbstractLogger(@NonNull File logDirectory) {
+        this(logDirectory, LOG_FILE, false, true);
     }
 
-    public AbstractLogger(@NonNull File logDir, boolean loggingEnabled, boolean logcatEnabled) {
-        this.logDir = logDir;
-        this.loggingEnabled = loggingEnabled;
+    public AbstractLogger(@NonNull File logDirectory,
+                          @NonNull String fileName,
+                          boolean logcatEnabled,
+                          boolean printThreadName) {
+        if (!logDirectory.isDirectory()) {
+            throw new IllegalStateException("Only directory permitted");
+        }
+
+        if (fileName == null || fileName.isEmpty()) {
+            throw new IllegalStateException("fileName is null");
+        }
+
+        if (!logDirectory.exists()) {
+            if (!logDirectory.mkdirs()) {
+                throw new IllegalStateException("Can`t create log folder");
+            }
+        }
+
+        this.logFile = new File(logDirectory, fileName);
         this.logcatEnabled = logcatEnabled;
-        logDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
+        this.logDateFormat = new SimpleDateFormat(PATTERN, Locale.US);
+        this.printThreadName = printThreadName;
     }
 
     @NonNull
@@ -134,50 +151,52 @@ public abstract class AbstractLogger {
         log(logType, message, null);
     }
 
-    public final void logException(@NonNull LogType logType, @NonNull Throwable t) {
-        log(logType, Log.getStackTraceString(t));
+    public final void logException(@NonNull LogType logType, @Nullable String message, @NonNull Throwable t) {
+        boolean empty = message == null || message.isEmpty();
+        log(logType, empty ? "{}" : message, () -> Log.getStackTraceString(t));
     }
 
     public final void log(@NonNull LogType logType, @NonNull final String message, @Nullable Func0<Object> args) {
-        if (!loggingEnabled || !logType.isEnabled()) {
+        if (!logType.isEnabled()) {
             return;
         }
 
+        String callerThreadName = Thread.currentThread().getName();
+
         executorService.submit(() -> {
             try {
-                printMessage(logType, replaceLogPlaceholders(message, args));
-            } catch (Exception e) {
-                e.printStackTrace();
-                printMessage(logType, "Exception in Logger! e=" + Log.getStackTraceString(e));
+                printMessage(logType, callerThreadName, replaceLogPlaceholders(message, args));
+            } catch (Throwable t) {
+                t.printStackTrace();
+                printMessage(logType, callerThreadName, "Throwable in Logger! t=" + Log.getStackTraceString(t));
             }
         });
     }
 
-    private void printMessage(@NonNull LogType logType, String msg) {
+    private void printMessage(@NonNull LogType logType, @NonNull String callerThreadName, String msg) {
         if (logcatEnabled) {
             Log.d(logType.name(), msg);
         }
 
-        writeLogToFile(logType.name() + LOG_DELIMITER + msg);
+        String threadPrint = "";
+        if (printThreadName) {
+            threadPrint = LOG_DELIMITER + "### " + callerThreadName;
+        }
+
+        writeLogToFile(logType.name() + threadPrint + LOG_DELIMITER + msg);
     }
 
     @NonNull
-    private File getLogFile() {
-        if (logFile == null) {
-            File logFolder = new File(logDir + "/" + LOG_FOLDER);
-            if (!logFolder.exists()) {
-                if (!logFolder.mkdirs()) {
-                    throw new IllegalStateException("Cant create log folder");
-                }
-            }
-
-            logFile = new File(logFolder, LOG_FILE);
+    public File getLogFile() {
+        synchronized (this) {
+            return logFile;
         }
-        return logFile;
     }
 
     public long getLogFileSize() {
-        return getLogFile().length();
+        synchronized (this) {
+            return getLogFile().length();
+        }
     }
 
     @NonNull
@@ -185,21 +204,25 @@ public abstract class AbstractLogger {
         return Uri.parse("content://" + context.getPackageName() + ".fileprovider/" + LOG_FOLDER + "/" + LOG_FILE);
     }
 
-    public synchronized boolean clear() {
-        return getLogFile().delete();
+    public boolean clear() {
+        synchronized (this) {
+            return getLogFile().delete();
+        }
     }
 
-    private synchronized void writeLogToFile(@NonNull String text) {
-        try (FileWriter fWriter = new FileWriter(getLogFile(), true)) {
+    private void writeLogToFile(@NonNull String text) {
+        synchronized (this) {
+            try (FileWriter fWriter = new FileWriter(getLogFile(), true)) {
 
-            fWriter.write(logDateFormat.format(new Date()));
-            fWriter.write(LOG_DELIMITER);
-            fWriter.write(text);
-            fWriter.write("\n");
-            fWriter.flush();
+                fWriter.write(logDateFormat.format(new Date()));
+                fWriter.write(LOG_DELIMITER);
+                fWriter.write(text);
+                fWriter.write("\n");
+                fWriter.flush();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
