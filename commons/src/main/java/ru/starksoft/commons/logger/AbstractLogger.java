@@ -33,17 +33,16 @@ public abstract class AbstractLogger {
     private final boolean printThreadName;
     private final File logFile;
 
-    public AbstractLogger(@NonNull File logDirectory) {
-        this(logDirectory, LOG_FILE, false, true);
+    public AbstractLogger(@NonNull Context context) {
+        this(context, LOG_FILE, false, true);
     }
 
-    public AbstractLogger(@NonNull File logDirectory,
+    public AbstractLogger(@NonNull Context context,
                           @NonNull String fileName,
                           boolean logcatEnabled,
                           boolean printThreadName) {
-        if (!logDirectory.isDirectory()) {
-            throw new IllegalStateException("Only directory permitted");
-        }
+        File filesDir = context.getFilesDir();
+        File logDirectory = new File(filesDir, LOG_FOLDER);
 
         if (fileName == null || fileName.isEmpty()) {
             throw new IllegalStateException("fileName is null");
