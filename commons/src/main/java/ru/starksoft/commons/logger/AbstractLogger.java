@@ -48,11 +48,7 @@ public abstract class AbstractLogger {
             throw new IllegalStateException("fileName is null");
         }
 
-        if (!logDirectory.exists()) {
-            if (!logDirectory.mkdirs()) {
-                throw new IllegalStateException("Can`t create log folder");
-            }
-        }
+        ensureLogFolder(logDirectory);
 
         this.logFile = new File(logDirectory, fileName);
         this.logcatEnabled = logcatEnabled;
@@ -146,6 +142,14 @@ public abstract class AbstractLogger {
         return indexes;
     }
 
+    private void ensureLogFolder(@NonNull File logDirectory) {
+        if (!logDirectory.exists()) {
+            if (!logDirectory.mkdirs()) {
+                throw new IllegalStateException("Can`t create log folder");
+            }
+        }
+    }
+
     public final void log(@NonNull LogType logType, @NonNull String message) {
         log(logType, message, null);
     }
@@ -188,6 +192,7 @@ public abstract class AbstractLogger {
     @NonNull
     public File getLogFile() {
         synchronized (this) {
+            ensureLogFolder(logFile.getParentFile());
             return logFile;
         }
     }
