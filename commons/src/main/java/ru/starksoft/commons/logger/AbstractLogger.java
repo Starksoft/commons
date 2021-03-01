@@ -1,7 +1,6 @@
 package ru.starksoft.commons.logger;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import java.io.File;
@@ -20,6 +19,8 @@ import java.util.regex.Pattern;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ru.starksoft.commons.callback.Func0;
+
+import static ru.starksoft.commons.CommonUtils.checkNotNull;
 
 public abstract class AbstractLogger {
 
@@ -44,9 +45,7 @@ public abstract class AbstractLogger {
         File filesDir = context.getFilesDir();
         File logDirectory = new File(filesDir, LOG_FOLDER);
 
-        if (fileName == null || fileName.isEmpty()) {
-            throw new IllegalStateException("fileName is null");
-        }
+        checkNotNull(fileName, "fileName is null");
 
         ensureLogFolder(logDirectory);
 
@@ -60,7 +59,6 @@ public abstract class AbstractLogger {
     @SuppressWarnings("rawtypes")
     static String replaceLogPlaceholders(@NonNull String input, @Nullable Func0<Object> args) {
         if (args != null) {
-            @Nullable
             Object call = args.call();
 
             String argsString;
@@ -142,7 +140,10 @@ public abstract class AbstractLogger {
         return indexes;
     }
 
-    private void ensureLogFolder(@NonNull File logDirectory) {
+    private void ensureLogFolder(@Nullable File logDirectory) {
+        if (logDirectory == null) {
+            throw new IllegalStateException("logDirectory is null");
+        }
         if (!logDirectory.exists()) {
             if (!logDirectory.mkdirs()) {
                 throw new IllegalStateException("Can`t create log folder");
@@ -201,11 +202,6 @@ public abstract class AbstractLogger {
         synchronized (this) {
             return getLogFile().length();
         }
-    }
-
-    @NonNull
-    public Uri getFileUri(@NonNull Context context) {
-        return Uri.parse("content://" + context.getPackageName() + ".fileprovider/" + LOG_FOLDER + "/" + LOG_FILE);
     }
 
     public boolean clear() {

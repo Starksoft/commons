@@ -1,4 +1,3 @@
 package ru.starksoft.commons.callback;
 
-public interface Function {
-}
+public interface Function {}

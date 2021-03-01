@@ -38,6 +38,14 @@ public final class CommonUtils {
 	}
 
 	@NonNull
+	public static <T> T checkNotNull(@Nullable T obj, @NonNull String message) {
+		if (obj == null) {
+			throw new NullPointerException(message);
+		}
+		return obj;
+	}
+
+	@NonNull
 	public static <T> T checkArguments(@Nullable T obj) {
 		if (obj == null) {
 			throw new IllegalArgumentException();
