@@ -184,10 +184,10 @@ public abstract class AbstractLogger {
 
         String threadPrint = "";
         if (printThreadName) {
-            threadPrint = LOG_DELIMITER + "### " + callerThreadName;
+            threadPrint = callerThreadName + " ### ";
         }
 
-        writeLogToFile(logType.name() + threadPrint + LOG_DELIMITER + msg);
+        writeLogToFile(logType.name() + LOG_DELIMITER + threadPrint + msg);
     }
 
     @NonNull
