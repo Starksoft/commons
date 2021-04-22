@@ -23,4 +23,21 @@ public final class NumericUtils {
 
         return result;
     }
+
+    public static float parseFloat(@Nullable String input) {
+        float result = 0;
+
+        if (input == null || input.length() == 0) {
+            return result;
+        }
+
+        try {
+            result = Float.parseFloat(input.trim().replaceAll(",", "."));
+        } catch (NumberFormatException ignored) {
+        }
+
+        return result;
+    }
+
+
 }
