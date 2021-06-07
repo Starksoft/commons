@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
 
 android {
 
@@ -10,12 +8,19 @@ android {
 	buildToolsVersion versions.buildTools
 
 	defaultConfig {
+		defaultPublishConfig "release"
+
 		minSdkVersion buildConfig.minSdk
 		targetSdkVersion buildConfig.targetSdk
 
 		versionCode 1
 		versionName buildConfig.version
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+	}
+
+	lintOptions {
+		abortOnError false
+		tasks.lint.enabled = rootProject.buildConfig.lintEnabled
 	}
 
 	buildTypes {
@@ -31,83 +36,16 @@ android {
 	}
 }
 
-ext.artifact = [
+ext.artifactData = [
 		'groupId': 'ru.starksoft',
 		'id'     : 'commons',
 		'version': '1.3.7',
 		'siteUrl': 'https://github.com/Starksoft/commons',
 		'gitUrl' : 'https://github.com/Starksoft/commons.git',
-		'repo'   : 'android-maven'
+		'description' : 'Commons library'
 ]
 
-version = artifact.version
-group = artifact.groupId
-
-install {
-	repositories.mavenInstaller {
-		pom.project {
-			packaging 'aar'
-			groupId artifact.groupId
-			artifactId artifact.id
-			version artifact.version
-			name artifact.id // pom.project.name must be same as bintray.pkg.name
-			url artifact.siteUrl
-			inceptionYear '2019' // HARDCODED
-			licenses {
-				license { // HARDCODED
-					name 'GPL-3.0'
-					url 'https://www.gnu.org/licenses/gpl.txt'
-					distribution 'repo'
-				}
-			}
-			scm {
-				connection artifact.gitUrl
-				developerConnection artifact.gitUrl
-				url artifact.siteUrl
-			}
-		}
-	}
-}
-
-task sourcesJar(type: Jar) {
-	from android.sourceSets.main.java.srcDirs
-	classifier = "sources"
-}
-
-task javadoc(type: Javadoc) {
-	source = android.sourceSets.main.java.srcDirs
-	classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-	classifier = "javadoc"
-	from javadoc.destinationDir
-	// options.encoding = ‘UTF-8’
-}
-
-artifacts {
-	archives sourcesJar
-//	archives javadocJar
-}
-
-bintray {
-	user = System.getenv('user')
-	key = System.getenv('key')
-
-	configurations = ['archives']
-	pkg {
-		repo = artifact.repo
-		name = artifact.id
-		websiteUrl = artifact.siteUrl
-		vcsUrl = artifact.gitUrl
-		userOrg = artifact.userOrg
-		licenses = ['Apache-2.0']
-		publish = true
-		version {
-			name = artifact.version
-		}
-	}
-}
+project.archivesBaseName = artifactData.id
 
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -128,3 +66,6 @@ dependencies {
 	api "dev.chrisbanes:insetter:0.2.0"
 	api "dev.chrisbanes:insetter-ktx:0.2.0"
 }
+
+// ./gradlew :commons:build publishReleasePublicationToSonatypeRepository closeAndReleaseRepository
+apply from: 'publish-mavencentral.gradle'

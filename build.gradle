@@ -1,44 +1,46 @@
+apply plugin: 'io.codearte.nexus-staging'
+
 buildscript {
-	ext.buildConfig = [
-			applicationPackage: 'ru.starksoft.commons.example',
-			applicationName   : 'commons-example',
 
-			minSdk            : 19,
-			targetSdk         : 29,
-			compileSdk        : 29,
-			version           : '1.0.0',
-	]
+    ext.buildConfig = [
+            applicationPackage: 'ru.starksoft.commons.example',
+            applicationName   : 'commons-example',
 
-	ext.versions = [
-			buildTools: '29.0.2',
-			kotlin    : '1.4.30'
-	]
+            minSdk            : 19,
+            targetSdk         : 29,
+            compileSdk        : 29,
+            version           : '1.0.0',
+            lintEnabled       : false
+    ]
 
-	repositories {
-		google()
-		jcenter()
+    ext.versions = [
+            buildTools: '29.0.2',
+            kotlin    : '1.5.10'
+    ]
 
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:3.6.3'
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
-		classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-	}
-}
-
-plugins {
-	id "com.jfrog.bintray" version "1.7.3"
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
+    }
 }
 
 allprojects {
-	repositories {
-		jcenter()
-		maven { url 'https://maven.google.com/' }
-		maven { url 'https://maven.fabric.io/public' }
-		google()
-	}
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://maven.google.com/' }
+        maven { url 'https://maven.google.com/' }
+        maven { url 'https://maven.fabric.io/public' }
+    }
 }
 
 task clean(type: Delete) {
-	delete rootProject.buildDir
+    delete rootProject.buildDir
 }
