@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 object DelayUtils {
 
-    private val lastUpdateTimeMap: MutableMap<String, Long> by lazy { HashMap<String, Long>() }
+    private val lastUpdateTimeMap: MutableMap<String, Long> by lazy { HashMap() }
     private val UPDATE_DELAY = TimeUnit.HOURS.toMillis(1)
 
     private fun isDelayReached(currentTime: Long, lastUpdate: Long): Boolean {

@@ -24,30 +24,30 @@ object NotificationHelper {
     }
 
     data class Builder constructor(
-		private val context: Context,
-		private var id: Int = 0,
-		private var icon: Int = 0,
-		private var largeIcon: Bitmap? = null,
-		private var title: String? = null,
-		private var message: String? = null,
-		private var defaultSound: Boolean = false,
-		private var soundUri: Uri? = null,
-		private var autoCancel: Boolean = false,
-		private var ongoing: Boolean = false,
-		private var localOnly: Boolean = false,
-		private var pendingIntent: PendingIntent? = null,
-		private var channelName: String? = null,
-		private var channelId: String? = null,
-		private var style: NotificationCompat.Style? = null,
-		private var channel: NotificationChannel? = null
+        private val context: Context,
+        private var id: Int = 0,
+        private var icon: Int = 0,
+        private var largeIcon: Bitmap? = null,
+        private var title: String? = null,
+        private var message: String? = null,
+        private var defaultSound: Boolean = false,
+        private var soundUri: Uri? = null,
+        private var autoCancel: Boolean = false,
+        private var ongoing: Boolean = false,
+        private var localOnly: Boolean = false,
+        private var pendingIntent: PendingIntent? = null,
+        private var channelName: String? = null,
+        private var channelId: String? = null,
+        private var style: NotificationCompat.Style? = null,
+        private var channel: NotificationChannel? = null
 
-	) {
+    ) {
 
         private val notificationManager by lazy(NONE) {
             ContextCompat.getSystemService(
-				context,
-				NotificationManager::class.java
-			)!!
+                context,
+                NotificationManager::class.java
+            )!!
         }
 
         fun defaultSound(): Builder {
@@ -91,9 +91,9 @@ object NotificationHelper {
         }
 
         fun icon(
-			@DrawableRes
-			icon: Int
-		): Builder {
+            @DrawableRes
+            icon: Int
+        ): Builder {
             this.icon = icon
             return this
         }

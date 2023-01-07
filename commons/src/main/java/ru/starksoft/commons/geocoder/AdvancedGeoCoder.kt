@@ -12,13 +12,12 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
-import kotlin.collections.ArrayList
 
 class AdvancedGeoCoder constructor(context: Context, private val coderType: GeocoderType) {
 
     private val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-    private val googleApiKey = ""//context.getString(R.string.google_map_api_key)
-    private val yandexApiKey = ""//context.getString(R.string.yandex_api_key)
+    private val googleApiKey = "" //context.getString(R.string.google_map_api_key)
+    private val yandexApiKey = "" //context.getString(R.string.yandex_api_key)
 
     fun tryToGetLocation(lat: Double, lon: Double, priority: Array<GeocoderType>): Address? {
         Log.d(
@@ -49,7 +48,7 @@ class AdvancedGeoCoder constructor(context: Context, private val coderType: Geoc
 
     private fun getFromLocation(lat: Double, lon: Double, geocoderType: GeocoderType): Address? {
         return when (geocoderType) {
-            GeocoderType.GOOGLE_INTERNAL -> geocoder.getFromLocation(lat, lon, MAX_RESULTS)[0]
+            GeocoderType.GOOGLE_INTERNAL -> geocoder.getFromLocation(lat, lon, MAX_RESULTS)?.getOrNull(0)
             GeocoderType.GOOGLE_EXTERNAL -> getLocationFromGoogle(lat, lon)
             GeocoderType.YANDEX -> getLocationFromYandex(lat, lon)
         }
@@ -62,7 +61,7 @@ class AdvancedGeoCoder constructor(context: Context, private val coderType: Geoc
                 GeocoderType.GOOGLE_INTERNAL -> {
                     val fromLocation: List<Address>
                     try {
-                        fromLocation = geocoder.getFromLocation(lat, lon, MAX_RESULTS)
+                        fromLocation = geocoder.getFromLocation(lat, lon, MAX_RESULTS).orEmpty()
                         addressList.addAll(fromLocation)
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -93,7 +92,7 @@ class AdvancedGeoCoder constructor(context: Context, private val coderType: Geoc
             when (coderType) {
                 GeocoderType.GOOGLE_INTERNAL -> {
                     try {
-                        addressList.addAll(geocoder.getFromLocationName(locationName, MAX_RESULTS))
+                        addressList.addAll(geocoder.getFromLocationName(locationName, MAX_RESULTS).orEmpty())
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -128,7 +127,6 @@ class AdvancedGeoCoder constructor(context: Context, private val coderType: Geoc
         return parseYandexResponse(response)
     }
 
-
     private fun getLocationNameFromYandex2(locationName: String): List<Address> {
         return parseYandexResponse2(getLocationInfo(locationName, GeocoderType.YANDEX))
     }
@@ -144,7 +142,6 @@ class AdvancedGeoCoder constructor(context: Context, private val coderType: Geoc
             var town: String? = null
             var street: String? = null
             var house: String? = null
-
 
             val jsonArray = response.getJSONObject("response").getJSONObject("GeoObjectCollection")
                 .getJSONArray("featureMember")
